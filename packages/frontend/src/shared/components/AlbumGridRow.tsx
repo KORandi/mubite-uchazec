@@ -11,6 +11,7 @@ interface AlbumGridRowProps {
   columns: number;
   itemWidth: number;
   isItemLoaded: (index: number) => boolean;
+  scrollOffset: number;
 }
 
 export function AlbumGridRow({
@@ -20,6 +21,7 @@ export function AlbumGridRow({
   columns,
   itemWidth,
   isItemLoaded,
+  scrollOffset,
 }: AlbumGridRowProps) {
   const startIdx = index * columns;
   const items: (AlbumResponseDto | null)[] = [];
@@ -54,7 +56,14 @@ export function AlbumGridRow({
           );
         }
 
-        return <AlbumGridItem key={album.id} album={album} width={itemWidth} />;
+        return (
+          <AlbumGridItem
+            key={album.id}
+            album={album}
+            width={itemWidth}
+            scrollOffset={scrollOffset}
+          />
+        );
       })}
     </div>
   );

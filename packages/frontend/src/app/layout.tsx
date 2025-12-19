@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import { QueryProvider } from '@/shared/providers/QueryProvider';
 import { PWARegister } from '@/lib/pwa';
+import { ScrollPositionProvider } from '@/shared/context/ScrollPositionContext';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -42,7 +43,9 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-900 text-white`}
       >
         <PWARegister />
-        <QueryProvider>{children}</QueryProvider>
+        <ScrollPositionProvider>
+          <QueryProvider>{children}</QueryProvider>
+        </ScrollPositionProvider>
       </body>
     </html>
   );

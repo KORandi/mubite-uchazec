@@ -4,6 +4,7 @@ import { FixedSizeList as List } from 'react-window';
 import InfiniteLoader from 'react-window-infinite-loader';
 import { AlbumGridRow } from './AlbumGridRow';
 import type { AlbumResponseDto } from '../types/album';
+import { useScrollRestoration } from '../hooks/useScrollRestoration';
 
 interface VirtualizedGridProps {
   albums: AlbumResponseDto[];
@@ -28,6 +29,7 @@ export function VirtualizedGrid({
 }: VirtualizedGridProps) {
   const itemCount = hasNextPage ? albums.length + 1 : albums.length;
   const rowCount = Math.ceil(itemCount / columns);
+  const { listRef, currentScrollOffset, handleScroll } = useScrollRestoration(albums.length);
 
   return (
     <InfiniteLoader isItemLoaded={isItemLoaded} itemCount={itemCount} loadMoreItems={loadMoreItems}>
@@ -37,6 +39,7 @@ export function VirtualizedGrid({
           itemCount={rowCount}
           itemSize={itemHeight}
           width="100%"
+          onScroll={handleScroll}
           onItemsRendered={({
             visibleStartIndex,
             visibleStopIndex,
@@ -52,7 +55,12 @@ export function VirtualizedGrid({
               overscanStopIndex: Math.min(overscanStopIndex * columns + columns - 1, itemCount - 1),
             });
           }}
-          ref={ref}
+          ref={(list) => {
+            listRef.current = list;
+            if (typeof ref === 'function') {
+              ref(list);
+            }
+          }}
         >
           {({ index, style }) => (
             <AlbumGridRow
@@ -62,6 +70,7 @@ export function VirtualizedGrid({
               columns={columns}
               itemWidth={itemWidth}
               isItemLoaded={isItemLoaded}
+              scrollOffset={currentScrollOffset}
             />
           )}
         </List>

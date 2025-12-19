@@ -1,15 +1,25 @@
+'use client';
+
 import { AlbumResponseDto } from '../types/album';
 import Link from 'next/link';
 import { AvatarCircle } from './AvatarCircle';
 import { Card } from './Card';
+import { useScrollPosition } from '../context/ScrollPositionContext';
 
 interface AlbumCardProps {
   album: AlbumResponseDto;
+  scrollOffset?: number;
 }
 
-export function AlbumCard({ album }: AlbumCardProps) {
+export function AlbumCard({ album, scrollOffset = 0 }: AlbumCardProps) {
+  const { saveScrollPosition } = useScrollPosition();
+
+  const handleClick = () => {
+    saveScrollPosition(scrollOffset, album.id);
+  };
+
   return (
-    <Link href={`/albums/${album.id}`}>
+    <Link href={`/albums/${album.id}`} onClick={handleClick}>
       <Card variant="interactive" className="h-full cursor-pointer">
         <div className="flex items-start gap-4">
           <div className="shrink-0">
